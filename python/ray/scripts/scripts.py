@@ -621,7 +621,7 @@ def start(
         include_dashboard=include_dashboard,
         dashboard_host=dashboard_host,
         dashboard_port=dashboard_port,
-        dashboard_agent_listen_port=dashboard_agent_listen_port,
+        dashboard_agent_listen_port=8265,
         metrics_agent_port=dashboard_agent_grpc_port,
         _system_config=system_config,
         enable_object_reconstruction=enable_object_reconstruction,
