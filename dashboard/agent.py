@@ -126,7 +126,7 @@ class DashboardAgent(object):
 
         logger.info("Try to _configure_api_http_server")
         
-        api_server_agent_port = ray_constants.DEFAULT_DASHBOARD_PORT
+        api_server_agent_port = ray_constants.DEFAULT_API_SERVER_AGENT_PORT
 
         modules = []
         modules.append(ServeHead(self))
