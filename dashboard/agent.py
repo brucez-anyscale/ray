@@ -6,6 +6,8 @@ import os
 import sys
 import json
 
+from dashboard.modules.serve.serve_head import ServeHead
+
 try:
     from grpc import aio as aiogrpc
 except ImportError:
@@ -118,6 +120,32 @@ class DashboardAgent(object):
         http_server = HttpServerAgent(self.ip, self.listen_port)
         await http_server.start(modules)
         return http_server
+
+    async def _configure_api_http_server(self):
+        from ray.dashboard.http_server_agent import HttpServerAgent
+
+        logger.info("Try to _configure_api_http_server")
+        
+        api_server_agent_port = ray_constants.DEFAULT_DASHBOARD_PORT
+
+        modules = []
+        modules.append(ServeHead(self))
+
+        for i in range(1000):
+            try:
+                http_server = HttpServerAgent(self.ip, api_server_agent_port)
+                await http_server.start(modules)
+                logger.info("api_http_server use port %s", api_server_agent_port)
+                return http_server
+            except OSError as e:
+                last_ex = e
+                api_server_agent_port += 1
+                logger.warning("Try to use port %s: %s", api_server_agent_port, e)
+        else:
+            raise Exception(
+                f"Failed to find a valid port for api server agent after "
+                f"1000 retries: {last_ex}"
+            )
 
     def _load_modules(self):
         """Load dashboard agent modules."""
